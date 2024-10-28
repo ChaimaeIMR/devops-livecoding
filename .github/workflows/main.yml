@@ -23,6 +23,13 @@ jobs:
 
       - name: Build and Test with Maven
         run: mvn -f simple-api/pom.xml clean verify
+      - name: Build and test with sonar
+        run : mvn -B verify sonar:sonar
+          -Dsonar.projectKey=devops-2024
+          -Dsonar.organization=devops-school
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
+
 
   # Job to build and push docker images
   build-and-push-docker-image:
@@ -54,9 +61,9 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
 
       # Build and push the httpd Docker image
-      - name: Build and push httpd image
+      - name: Build and push http-server image
         uses: docker/build-push-action@v3
         with:
-          context: ./httpd  # Path to httpd Dockerfile
+          context: ./http-server  # Path to httpd Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
