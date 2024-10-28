@@ -54,9 +54,9 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
 
       # Build and push the httpd Docker image
-      - name: Build and push httpd image
+      - name: Build and push http-server image
         uses: docker/build-push-action@v3
         with:
-          context: ./httpd  # Path to httpd Dockerfile
+          context: ./http-server  # Path to httpd Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
