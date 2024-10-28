@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  # Job to build and test the application
+  # Job to build and test the applications
   build-and-test:
     runs-on: ubuntu-latest
     steps:
