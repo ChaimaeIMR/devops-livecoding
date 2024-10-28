@@ -6,8 +6,9 @@ on:
       - main
       - develop
   pull_request:
-#
+
 jobs:
+  # Job to build and test the application
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -22,3 +23,40 @@ jobs:
 
       - name: Build and Test with Maven
         run: mvn -f simple-api/pom.xml clean verify
+
+  # Job to build and push docker images
+  build-and-push-docker-image:
+    needs: build-and-test  # Ensure tests pass before building/pushing images
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2.5.0
+
+      # Step to login to Docker Hub
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build and push the backend Docker image
+      - name: Build and push backend image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./simple-api  # Path to backend Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      # Build and push the database Docker image
+      - name: Build and push database image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./database  # Path to database Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      # Build and push the httpd Docker image
+      - name: Build and push httpd image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./httpd  # Path to httpd Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
