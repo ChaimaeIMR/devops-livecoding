@@ -25,8 +25,8 @@ jobs:
         run: mvn -f simple-api/pom.xml clean verify 
       - name: Build and test with sonar 
         run : mvn -B verify sonar:sonar 
-         -Dsonar.projectKey=devops-2024 
-         -Dsonar.organization=devops-school
+         -Dsonar.projectKey=ChaimaeIMR_devops-livecoding
+         -Dsonar.organization=chaimaeimr
          -Dsonar.host.url=https://sonarcloud.io 
          -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
 
